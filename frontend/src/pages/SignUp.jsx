@@ -1,8 +1,7 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { serverUrl } from "../config.js";
-
-import axios from "axios";
+import api from "../utils/api";
+import { setToken } from "../utils/auth";
 
 function SignUp() {
   
@@ -19,22 +18,26 @@ function SignUp() {
     e.preventDefault();
     setLoading(true);
     try {
-      let result = await axios.post(
-        `${serverUrl}/api/auth/signup`,
-        {
-          userName,
-          email,
-          password,
-        },
-        { withCredentials: true }
-      );
+      let result = await api.post("/api/auth/signup", {
+        userName,
+        email,
+        password,
+      });
+      
+      // Store token in localStorage for auto-login after signup
+      if (result.data.token) {
+        setToken(result.data.token);
+        navigate("/dashboard"); // Direct to dashboard after signup
+      } else {
+        navigate("/login");
+      }
+      
       console.log("Sign up successful:", result);
       setUserName("");
       setEmail("");
       setPassword("");
       setLoading(false);
       setErr("");
-      navigate("/login");
     } catch (error) {
       console.log("Error during sign up:", error);
       setLoading(false);

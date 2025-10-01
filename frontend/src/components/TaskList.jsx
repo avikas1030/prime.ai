@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { serverUrl } from "../config";
+import api from "../utils/api";
 import { FaEdit, FaSave, FaTrash } from "react-icons/fa";
 
 const TaskList = ({ tasks, refreshTasks }) => {
@@ -7,11 +7,12 @@ const TaskList = ({ tasks, refreshTasks }) => {
   const [editData, setEditData] = useState({ title: "", description: "" });
 
   const handleDelete = async (id) => {
-    await fetch(`${serverUrl}/api/tasks/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    refreshTasks();
+    try {
+      await api.delete(`/api/tasks/${id}`);
+      refreshTasks();
+    } catch (err) {
+      console.error("Error deleting task:", err.response?.data || err.message);
+    }
   };
 
   const handleEditClick = (task) => {
@@ -20,15 +21,14 @@ const TaskList = ({ tasks, refreshTasks }) => {
   };
 
   const handleUpdate = async (id) => {
-    await fetch(`${serverUrl}/api/tasks/${id}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editData),
-    });
-    setEditingTaskId(null);
-    setEditData({ title: "", description: "" });
-    refreshTasks();
+    try {
+      await api.put(`/api/tasks/${id}`, editData);
+      setEditingTaskId(null);
+      setEditData({ title: "", description: "" });
+      refreshTasks();
+    } catch (err) {
+      console.error("Error updating task:", err.response?.data || err.message);
+    }
   };
 
   return (

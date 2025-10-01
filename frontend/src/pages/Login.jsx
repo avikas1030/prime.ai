@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { serverUrl } from '../config.js';
-import axios from 'axios';
-// import { set } from 'mongoose';
+import api from '../utils/api';
+import { setToken } from '../utils/auth';
 
 
 function Login() {
@@ -17,15 +16,16 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      let result = await axios.post(
-        `${serverUrl}/api/auth/login`,
-        {
-  
-          email,
-          password,
-        },
-        { withCredentials: true }
-      );
+      let result = await api.post("/api/auth/login", {
+        email,
+        password,
+      });
+      
+      // Store token in localStorage
+      if (result.data.token) {
+        setToken(result.data.token);
+      }
+      
       console.log("Login successful:", result);
       setEmail("");
       setPassword("");
@@ -33,7 +33,7 @@ function Login() {
       setErr("");
       console.log("navigating to dashboard")
       navigate("/dashboard");
-      console.log(" after navigating to dashboard")
+      console.log("after navigating to dashboard")
     } catch (error) {
       console.log("Error during Login:", error);
       setLoading(false);

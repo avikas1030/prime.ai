@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import Profile from "../components/Profile";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
-import axios from "axios";
+import api from "../utils/api";
 import { FiLogOut } from "react-icons/fi";
-import { serverUrl } from "../config";
 import { useNavigate } from "react-router-dom";
+import { removeToken } from "../utils/auth";
 import "./dashboard.css"; // import the CSS
 
 const Dashboard = () => {
@@ -17,9 +17,7 @@ const Dashboard = () => {
   // Fetch Profile
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`${serverUrl}/api/user/current`, {
-        withCredentials: true,
-      });
+      const res = await api.get("/api/user/current");
       setProfile(res.data);
     } catch (err) {
       console.error("Error fetching profile:", err.response?.data || err.message);
@@ -29,9 +27,7 @@ const Dashboard = () => {
   // Fetch Tasks
   const fetchTasks = async () => {
     try {
-      const res = await axios.get(`${serverUrl}/api/tasks`, {
-        withCredentials: true,
-      });
+      const res = await api.get("/api/tasks");
       setTasks(res.data);
     } catch (err) {
       console.error("Error fetching tasks:", err.response?.data || err.message);
@@ -41,10 +37,14 @@ const Dashboard = () => {
   // Logout
   const handleLogout = async () => {
     try {
-      await axios.post(`${serverUrl}/api/auth/logout`, {}, { withCredentials: true });
+      await api.post("/api/auth/logout");
+      removeToken();
       navigate("/login");
     } catch (err) {
       console.error("Error during logout:", err.response?.data || err.message);
+      // Even if logout fails on server, clear local token
+      removeToken();
+      navigate("/login");
     }
   };
 

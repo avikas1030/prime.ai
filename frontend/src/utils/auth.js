@@ -1,9 +1,16 @@
 // frontend/src/utils/auth.js
 export const isAuthenticated = () => {
-  // If you are storing JWT in localStorage after login
   return !!localStorage.getItem("token");
+};
 
-  // OR if you are using httpOnly cookies only:
-  // return document.cookie.includes("token="); 
-  // (better: call a backend `/api/user/current` on app load to verify)
+export const getToken = () => {
+  return localStorage.getItem("token");
+};
+
+export const setToken = (token) => {
+  localStorage.setItem("token", token);
+};
+
+export const removeToken = () => {
+  localStorage.removeItem("token");
 };

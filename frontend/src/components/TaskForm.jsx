@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { serverUrl } from "../config";
+import api from "../utils/api";
 import { FaTasks, FaPen } from "react-icons/fa"; // optional icons
 
 const TaskForm = ({ refreshTasks }) => {
@@ -8,15 +8,14 @@ const TaskForm = ({ refreshTasks }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch(`${serverUrl}/api/tasks`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ title, description }),
-    });
-    setTitle("");
-    setDescription("");
-    refreshTasks();
+    try {
+      await api.post("/api/tasks", { title, description });
+      setTitle("");
+      setDescription("");
+      refreshTasks();
+    } catch (err) {
+      console.error("Error creating task:", err.response?.data || err.message);
+    }
   };
 
   return (
