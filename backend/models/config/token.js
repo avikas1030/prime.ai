@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import {use} from "react";
 
 const generateToken = async (userId)=>{
     try{
@@ -7,7 +8,7 @@ const generateToken = async (userId)=>{
     }
     catch(error){
         console.log("Token generation error: ", error); 
-        throw new Error("Token generation failed");
+        return res.status(500).json({message: "Internal server error"});
     }
 }
 

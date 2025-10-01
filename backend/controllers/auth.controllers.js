@@ -9,11 +9,11 @@ export const signUp = async (req, res)=>{
         }
         const existUserName = await User.findOne({userName})
         if(existUserName){
-            res.status(400).json({message:"User already exist"})
+            return res.status(400).json({message:"User already exist"})
         }
         const existEmail = await User.findOne({email})
         if(existEmail){
-            res.status(400).json({message:"Email already exist"})
+            return res.status(400).json({message:"Email already exist"})
         }
         if(password.length < 6){
             return res.status(400).json({message: "Password must be at least 6 characters"})

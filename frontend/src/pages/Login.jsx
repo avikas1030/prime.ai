@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { setToken } from '../utils/auth';
+import { setToken, isAuthenticated } from '../utils/auth';
+import { debugAuth, testAuthFlow } from '../utils/authDebug';
 
 
 function Login() {
@@ -15,31 +16,63 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErr("");
+    
+    console.log("🔐 Starting login process...");
+    debugAuth();
+    
     try {
       let result = await api.post("/api/auth/login", {
         email,
         password,
       });
       
+      console.log("✅ Login API response:", result.data);
+      
       // Store token in localStorage
       if (result.data.token) {
         setToken(result.data.token);
+        console.log("✅ Token stored successfully");
+      } else {
+        console.warn("⚠️ No token in response");
       }
       
-      console.log("Login successful:", result);
       setEmail("");
       setPassword("");
       setLoading(false);
       setErr("");
-      console.log("navigating to dashboard")
-      navigate("/dashboard");
-      console.log("after navigating to dashboard")
+      
+      console.log("🚀 Navigating to dashboard...");
+      
+      // Small delay to ensure token is set and state is updated
+      setTimeout(() => {
+        navigate("/dashboard", { replace: true });
+      }, 100);
+      
     } catch (error) {
-      console.log("Error during Login:", error);
+      console.error("❌ Login error:", error);
+      console.error("Error details:", error.response?.data);
       setLoading(false);
-      setErr(error?.response?.data?.message);
+      
+      if (error.code === 'ERR_NETWORK') {
+        setErr("Cannot connect to server. Please check if backend is running.");
+      } else {
+        setErr(error?.response?.data?.message || "Login failed. Please try again.");
+      }
     }
   };
+
+  // Debug on component mount and check if already authenticated
+  useEffect(() => {
+    debugAuth();
+    testAuthFlow();
+    
+    // If already authenticated, redirect to dashboard
+    if (isAuthenticated()) {
+      console.log("🔄 Already authenticated, redirecting to dashboard");
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
   return (
     <div className="w-full h-screen flex items-center justify-center bg-slate-200">
       <div className="w-full max-w-[450px] h-[500px] bg-white rounded-lg shadow-gray-400 shadow-lg flex flex-col gap-[30px]">
@@ -75,6 +108,21 @@ function Login() {
           <button className="w-full h-[40px] bg-indigo-500 text-white font-semibold rounded-md hover:bg-indigo-600 transition duration-300" disabled={loading}>
             {`${loading ? "Logging In..." : "Login"}`}
           </button>
+          
+          {/* Debug button
+          <button 
+            type="button"
+            onClick={() => {
+              console.log("🔍 Debug - Current auth state:", isAuthenticated());
+              console.log("🔍 Debug - Token:", localStorage.getItem("token")?.substring(0, 20) + "...");
+              if (isAuthenticated()) {
+                navigate("/dashboard", { replace: true });
+              }
+            }}
+            className="w-full h-[30px] bg-gray-400 text-white text-sm rounded-md hover:bg-gray-500 transition duration-300"
+          >
+            Debug: Check Auth & Navigate
+          </button> */}
           <p
             className="text-sm text-center text-gray-500"
             onClick={() => navigate("/login")}
