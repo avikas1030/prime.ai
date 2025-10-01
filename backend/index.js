@@ -10,7 +10,7 @@ import taskRouter from "./routes/task.routes.js"
 const port = process.env.PORT || 8000
 let app = express()
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://prime-ai-frontend.onrender.com",
     credentials: true
 }))
 app.use(express.json()) // to accept json data, if you are getting data from body
