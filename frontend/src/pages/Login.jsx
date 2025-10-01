@@ -31,7 +31,9 @@ function Login() {
       setPassword("");
       setLoading(false);
       setErr("");
+      console.log("navigating to dashboard")
       navigate("/dashboard");
+      console.log(" after navigating to dashboard")
     } catch (error) {
       console.log("Error during Login:", error);
       setLoading(false);
