@@ -49,7 +49,7 @@ function SignUp() {
       <div className="w-full max-w-[450px] h-[500px] bg-white rounded-lg shadow-gray-400 shadow-lg flex flex-col gap-[30px]">
         <div className="w-full h-[120px] bg-indigo-300 rounded-b-[8%] shadow-gray-300 shadow-lg flex items-center justify-center">
           <h1 className="text-gray-600 text-3xl font-bold text-[25px]">
-            Welcome to <span className="text-white text-[28px]">Prime</span>
+            Welcome to <span className="text-white text-[28px]">Optima Learn</span>
           </h1>
         </div>
         <form
