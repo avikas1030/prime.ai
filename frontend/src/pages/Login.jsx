@@ -18,7 +18,7 @@ function Login() {
     setLoading(true);
     setErr("");
     
-    console.log("🔐 Starting login process...");
+    console.log(" Starting login process...");
     debugAuth();
     
     try {
@@ -27,14 +27,14 @@ function Login() {
         password,
       });
       
-      console.log("✅ Login API response:", result.data);
+      console.log(" Login API response:", result.data);
       
       // Store token in localStorage
       if (result.data.token) {
         setToken(result.data.token);
-        console.log("✅ Token stored successfully");
+        console.log(" Token stored successfully");
       } else {
-        console.warn("⚠️ No token in response");
+        console.warn(" No token in response");
       }
       
       setEmail("");
@@ -42,7 +42,7 @@ function Login() {
       setLoading(false);
       setErr("");
       
-      console.log("🚀 Navigating to dashboard...");
+      console.log(" Navigating to dashboard...");
       
       // Small delay to ensure token is set and state is updated
       setTimeout(() => {
@@ -78,7 +78,7 @@ function Login() {
       <div className="w-full max-w-[450px] h-[500px] bg-white rounded-lg shadow-gray-400 shadow-lg flex flex-col gap-[30px]">
         <div className="w-full h-[120px] bg-indigo-300 rounded-b-[8%] shadow-gray-300 shadow-lg flex items-center justify-center">
           <h1 className="text-gray-600 text-3xl font-bold text-[25px]">
-            Login to <span className="text-white text-[28px]">Optima Learn</span>
+            Login to <span className="text-white text-[28px]">Prime</span>
           </h1>
         </div>
         <form className="w-full flex flex-col gap-[20px] px-[30px]" onSubmit={handleLogin}>
